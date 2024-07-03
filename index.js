@@ -16,15 +16,14 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
+app.get("/", (req, res) => {
+  res.status(200).send("Welcome to backend for flipKart");
+});
 app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/wishlist", wishlistRouter);
-
-app.get("/", (req, res) => {
-  res.status(200).send("Welcome to backend for flipKart");
-});
 
 const PORT = process.env.PORT;
 
