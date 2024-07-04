@@ -17,7 +17,7 @@ app.use(cors());
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.status(200).send("Welcome to backend for flipKart");
+  res.status(200).send("Welcome to backend for flipKart Application");
 });
 app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);

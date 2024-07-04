@@ -18,11 +18,11 @@ const getAllProducts = async (req, res) => {
     const page = parseInt(req.query.page) - 1 || initialPage;
     const limit = parseInt(req.query.limit) || perPageLimit;
 
-    let filter = {};
-    if (category) filter.category = category;
-    if (filterPrice) filter.price = { ...filter.price, $gte: filterPrice };
-    if (filterAssured) filter.assured = filterAssured;
-    if (filterRating) filter.rating = { ...filter.rating, $gte: filterRating };
+    // let filter = {};
+    // if (category) filter.category = category;
+    // if (filterPrice) filter.price = { ...filter.price, $gte: filterPrice };
+    // if (filterAssured) filter.assured = filterAssured;
+    // if (filterRating) filter.rating = { ...filter.rating, $gte: filterRating };
     let data = await Product.find({
       name: { $regex: search, $options: "i" },
     })
