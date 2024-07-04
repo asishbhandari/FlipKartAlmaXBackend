@@ -10,9 +10,6 @@ import {
 
 const productRouter = express.Router();
 
-productRouter.get("/detail", (req, res) => {
-  res.status(200).send({ message: "product route working" });
-});
 productRouter.get("/details", getAllProducts);
 productRouter.get("/:id", getProduct);
 productRouter.post("/addProduct", authentication, addProduct);

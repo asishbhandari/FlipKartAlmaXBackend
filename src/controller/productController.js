@@ -1,34 +1,37 @@
+import Category from "../modal/categoryModal.js";
 import Product from "../modal/productModal.js";
 import User from "../modal/userModal.js";
 
 // Get all products
-// add functionality to Search / filter for products using query string
 const perPageLimit = 10;
 const initialPage = 0;
 const getAllProducts = async (req, res) => {
   try {
-    const {
-      category,
-      filterPrice,
-      filterAssured,
-      filterRating,
-      sort = null,
-      search = "",
-    } = req.query;
+    const { sort = null, search = "" } = req.query;
     const page = parseInt(req.query.page) - 1 || initialPage;
     const limit = parseInt(req.query.limit) || perPageLimit;
 
-    // let filter = {};
-    // if (category) filter.category = category;
-    // if (filterPrice) filter.price = { ...filter.price, $gte: filterPrice };
-    // if (filterAssured) filter.assured = filterAssured;
-    // if (filterRating) filter.rating = { ...filter.rating, $gte: filterRating };
-    let data = await Product.find({
-      name: { $regex: search, $options: "i" },
-    })
+    let filter = {};
+    filter.name = { $regex: search, $options: "i" };
+    if (req.query?.category) {
+      const categoryId = await Category.find({ name: req.query?.category });
+      filter.category = categoryId;
+    }
+    if (req.query?.price) filter.price = { $gte: req.query?.price };
+    if (req.query?.isAssured) filter.isAssured = req.query?.isAssured;
+    if (req.query?.rating) filter.rating = { $gte: req.query?.rating };
+
+    let data = await Product.find(filter)
+      .populate("category", "name")
+      .populate("sellerId", "name")
       .skip(page * limit)
-      .limit(limit);
-    return res.status(200).send({ message: "successful", products: data });
+      .limit(limit)
+      .sort(sort);
+
+    const length = data.length;
+    return res
+      .status(200)
+      .send({ message: "successful", length: length, products: data });
   } catch (error) {
     return res
       .status(500)
