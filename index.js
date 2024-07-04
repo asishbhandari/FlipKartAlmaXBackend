@@ -16,6 +16,8 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
+console.log("Welcome");
+console.info("Welcome");
 app.get("/", (req, res) => {
   res.status(200).send("Welcome to backend for flipKart Application");
 });
@@ -33,4 +35,5 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
   connectDb();
   console.log(`Listening on Port ${PORT}`);
+  console.info(`Listening on Port ${PORT}`);
 });

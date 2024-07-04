@@ -13,6 +13,7 @@ const connectDb = async () => {
       console.log("disconnected from database");
     });
     console.log("connected to db");
+    console.info("connected to db");
   } catch (error) {
     console.log(error.message);
   }
