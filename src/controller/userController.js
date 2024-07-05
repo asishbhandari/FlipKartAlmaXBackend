@@ -116,7 +116,7 @@ const deleteUser = async (req, res) => {
         message: "Cannot delete other persons ID, login from your account",
       });
 
-    const user = await User.findById(id);
+    const user = await User.findById(userId);
     await Cart.findOneAndDelete({ userId: user._id.toString() });
     await WishList.findOneAndDelete({
       userId: user._id.toString(),
