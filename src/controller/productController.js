@@ -42,8 +42,8 @@ const getAllProducts = async (req, res) => {
 // get a single products
 const getProduct = async (req, res) => {
   try {
-    const { id } = req.params;
-    const data = await Product.findById(id);
+    const { productId } = req.params;
+    const data = await Product.findById(productId);
     if (!data)
       return res
         .status(204)
@@ -68,8 +68,14 @@ const addProduct = async (req, res) => {
       });
 
     req.body.sellerId = userId;
-    const product = await Product.create(req.body);
+    const isAdded = await Product.find(req.body);
+    if (isAdded) {
+      return res
+        .status(409)
+        .send({ message: "Product already added with above details by you" });
+    }
 
+    const product = await Product.create(req.body);
     return res.status(201).send({
       message: `Product added by the Seller ${user.name}`,
       productDetails: product,
@@ -84,7 +90,7 @@ const addProduct = async (req, res) => {
 // Update a product
 const updateProducts = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { productId } = req.params;
     const userId = res.locals.userId;
     const user = await User.findById(userId);
 
@@ -93,12 +99,12 @@ const updateProducts = async (req, res) => {
         message: "Only Seller can update the product login with seller account",
       });
 
-    let product = await Product.findById(id);
+    let product = await Product.findById(productId);
     if (product.sellerId.toString() !== userId)
       return res
         .status(409)
         .send({ message: "unAuthorized to update other seller product" });
-    product = await Product.findOneAndUpdate({ _id: id }, req.body, {
+    product = await Product.findOneAndUpdate({ _id: productId }, req.body, {
       new: true,
     });
     return res
@@ -114,7 +120,7 @@ const updateProducts = async (req, res) => {
 // Remove a product
 const removeProducts = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { productId } = req.params;
     const userId = res.locals.userId;
     const user = await User.findById(userId);
 
@@ -123,13 +129,13 @@ const removeProducts = async (req, res) => {
         message: "Only Seller can delete the product login with seller account",
       });
 
-    let product = await Product.findById(id);
+    let product = await Product.findById(productId);
     if (product?.sellerId.toString() !== userId)
       return res
         .status(409)
         .send({ message: "unAuthorized to delete other seller product" });
 
-    await Product.findByIdAndDelete(id);
+    await Product.findByIdAndDelete(productId);
     return res.status(200).send({ message: "Product Deleted Successfully" });
   } catch (error) {
     return res

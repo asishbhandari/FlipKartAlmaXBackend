@@ -11,9 +11,9 @@ import {
 const productRouter = express.Router();
 
 productRouter.get("/details", getAllProducts);
-productRouter.get("/:id", getProduct);
+productRouter.get("/:productId", getProduct);
 productRouter.post("/addProduct", authentication, addProduct);
-productRouter.patch("/:id", authentication, updateProducts);
-productRouter.delete("/:id", authentication, removeProducts);
+productRouter.patch("/:productId", authentication, updateProducts);
+productRouter.delete("/:productId", authentication, removeProducts);
 
 export default productRouter;

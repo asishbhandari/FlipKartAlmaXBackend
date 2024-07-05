@@ -77,18 +77,20 @@ const logout = async (req, res) => {
 // update User
 const updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
 
     // comparing id parameter with the token user id to confirm the user
-    const userId = res.locals.userId;
-    if (userId !== id)
-      return res
-        .status(409)
-        .send({ message: "Params Id does not Match the token" });
+    const userIdFromToken = res.locals.userId;
+    if (userIdFromToken !== userId)
+      return res.status(409).send({
+        message:
+          "Cannot update using other persons ID, login from your account",
+      });
+
     if (req.body.hasOwnProperty("email"))
       return res.status(409).send({ message: "Email cannot be changed" });
 
-    const user = await User.findOneAndUpdate({ _id: id }, req.body, {
+    const user = await User.findOneAndUpdate({ _id: userId }, req.body, {
       new: true,
     });
 
@@ -105,7 +107,15 @@ const updateUser = async (req, res) => {
 // Delete User
 const deleteUser = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
+
+    // comparing id parameter with the token user id to confirm the user
+    const userIdFromToken = res.locals.userId;
+    if (userIdFromToken !== userId)
+      return res.status(409).send({
+        message: "Cannot delete other persons ID, login from your account",
+      });
+
     const user = await User.findById(id);
     await Cart.findOneAndDelete({ userId: user._id.toString() });
     await WishList.findOneAndDelete({
